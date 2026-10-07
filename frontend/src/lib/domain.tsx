@@ -54,12 +54,6 @@ export const CHANGE_ACTION_ICON: Record<ChangeAction, LucideIcon> = {
   state_change: ListChecks, template_create: FileText, template_update: FileText,
 }
 
-export const MODE_STYLE: Record<FieldMode, string> = {
-  fixed: 'bg-card border-border',
-  choice: 'bg-card border-border',
-  item: 'bg-muted border-border',
-}
-
 export const FIELD_ICON: Record<FieldType, LucideIcon> = {
   text: Type, description: AlignLeft, string: CaseSensitive, serial_string: Barcode, link: Link2,
   enum: List, letter: AtSign, date: Calendar, integer: Hash, decimal: Sigma, boolean: ToggleLeft,

@@ -96,9 +96,8 @@ class UnitOfWork:
                 hook()
             except Exception:  # noqa: BLE001 - a follow-up must never fail the request
                 logger.exception("After-commit hook failed")
-        for event in events + self._events:
+        for event in events:
             self.publisher.publish(event)
-        self._events.clear()
 
     def _rollback(self) -> None:
         self.session.rollback()

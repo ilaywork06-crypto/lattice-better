@@ -38,7 +38,7 @@ def test_editors_propose_items_and_approval_creates_them(world, admin):
     cr = editor.ok("POST", "/change-requests", status=201, json={
         "action": "create", "payload": {"template_id": tpl["id"], "values": {"revision": "02"}},
         "reason": "New board arrived"})
-    assert cr["item_type"] == "card"
+    assert (cr["item_type"], cr["target_name"]) == ("card", "Power Regulator Board")
     assert admin.template("Power Regulator Board")["counts"]["total"] == 0
     approved = admin.ok("POST", f"/change-requests/{cr['id']}/approve")
     assert approved["status"] == "approved" and approved["reviewer"]["role"] == "manager"

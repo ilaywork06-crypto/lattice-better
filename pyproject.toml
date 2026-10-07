@@ -37,6 +37,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "**/migrations/versions/*.py" = ["E", "W", "I"]
+"scripts/*.py" = ["E501"]  # data tables read best one row per line
 
 [tool.ruff.lint.isort]
 known-first-party = ["lattice_core", "lattice_notifications", "lattice_shared"]

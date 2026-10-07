@@ -31,7 +31,7 @@ export function useDescribeChange() {
       case 'update':
         return t('describe.update', { target })
       case 'create':
-        return t('describe.create', { template: target })
+        return cr.target_name ? t('describe.create', { template: target }) : cr.description
       case 'template_create':
         return t('describe.templateCreate', { name: isolate(String(p.name ?? '')) })
       case 'template_update':

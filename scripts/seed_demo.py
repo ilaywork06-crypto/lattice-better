@@ -99,7 +99,7 @@ def main() -> None:
     })
 
     # ── templates ──
-    noa, dana = people["noa@lattice.io"], people["dana@lattice.io"]
+    noa = people["noa@lattice.io"]
     projects = [cat["Falcon"]["id"], cat["Sparrow"]["id"], cat["Horizon"]["id"]]
 
     def card(name, prefix, card_type, extra=(), managers=None):
