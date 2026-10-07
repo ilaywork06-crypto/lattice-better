@@ -88,7 +88,7 @@ class BulkCommand(BaseModel):
     note: str | None = None
 
 
-class BulkResult(BaseModel):
+class BulkResult(Schema):
     processed: int
 
 
@@ -135,7 +135,7 @@ class ItemRow(Schema):
     updated_at: datetime
 
 
-class ItemFieldOut(BaseModel):
+class ItemFieldOut(Schema):
     field_id: int
     key: str
     label: str
@@ -156,7 +156,7 @@ class StateEntry(Schema):
     changed_at: datetime
 
 
-class CompositionRow(BaseModel):
+class CompositionRow(Schema):
     template: TemplateRef
     min_count: int = 0
     max_count: int | None = None

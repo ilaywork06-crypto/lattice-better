@@ -31,8 +31,13 @@ oauth2 = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
 
 # ─────────────────────────── schemas ───────────────────────────
-class NotificationOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+class View(BaseModel):
+    model_config = ConfigDict(
+        from_attributes=True, json_schema_serialization_defaults_required=True
+    )
+
+
+class NotificationOut(View):
     id: int
     type: str
     title: str
@@ -43,14 +48,14 @@ class NotificationOut(BaseModel):
     created_at: datetime
 
 
-class NotificationPage(BaseModel):
+class NotificationPage(View):
     items: list[NotificationOut]
     total: int
     limit: int
     offset: int
 
 
-class CountsOut(BaseModel):
+class CountsOut(View):
     total: int
     unread: int
     read: int

@@ -3,9 +3,10 @@ from __future__ import annotations
 from pydantic import BaseModel, EmailStr, Field
 
 from lattice_core.domain.enums import CardTracking, CardType
+from lattice_core.schemas.common import Schema
 
 
-class StockRow(BaseModel):
+class StockRow(Schema):
     """The stock of one card template (all figures in units)."""
 
     template_id: int
@@ -31,7 +32,7 @@ class ThresholdIn(BaseModel):
     notify_email: EmailStr | None = None
 
 
-class ThresholdOut(BaseModel):
+class ThresholdOut(Schema):
     id: int
     template_id: int
     name: str
@@ -43,7 +44,7 @@ class ThresholdOut(BaseModel):
     is_low: bool = False
 
 
-class Summary(BaseModel):
+class Summary(Schema):
     setups: int = 0
     assemblies: int = 0
     cards: int = 0

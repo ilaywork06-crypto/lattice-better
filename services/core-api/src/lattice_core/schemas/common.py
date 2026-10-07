@@ -10,10 +10,15 @@ from lattice_core.infra.security import BCRYPT_MAX_BYTES
 
 
 class Schema(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    """Base of every view model. Defaulted fields are still always *sent*, so the
+    published schema marks them required (exact generated client types)."""
+
+    model_config = ConfigDict(
+        from_attributes=True, json_schema_serialization_defaults_required=True
+    )
 
 
-class Page[T](BaseModel):
+class Page[T](Schema):
     """One page of a longer list."""
 
     items: list[T]

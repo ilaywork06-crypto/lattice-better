@@ -39,7 +39,7 @@ class Me(UserOut):
     proposable_actions: list[ChangeAction]
 
 
-class TokenOut(BaseModel):
+class TokenOut(Schema):
     access_token: str
     token_type: str = "bearer"
     user: Me

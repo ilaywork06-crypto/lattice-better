@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from lattice_core.domain.enums import CardType, ItemState, ItemType
+from lattice_core.schemas.common import Schema
 
 
-class GraphNode(BaseModel):
+class GraphNode(Schema):
     id: int
     label: str
     type: ItemType
@@ -18,21 +19,21 @@ class GraphNode(BaseModel):
     count: int | None = None
 
 
-class GraphEdge(BaseModel):
+class GraphEdge(Schema):
     source: int
     target: int
     min_count: int | None = None
     max_count: int | None = None
 
 
-class GraphOut(BaseModel):
+class GraphOut(Schema):
     nodes: list[GraphNode] = Field(default_factory=list)
     edges: list[GraphEdge] = Field(default_factory=list)
     roots: list[int] = Field(default_factory=list)
     focus: int | None = None
 
 
-class SearchHit(BaseModel):
+class SearchHit(Schema):
     kind: str  # item | template | location | user
     id: int
     title: str
@@ -42,7 +43,7 @@ class SearchHit(BaseModel):
     link: str
 
 
-class SearchResults(BaseModel):
+class SearchResults(Schema):
     query: str
     items: list[SearchHit] = Field(default_factory=list)
     templates: list[SearchHit] = Field(default_factory=list)
@@ -54,6 +55,6 @@ class SearchResults(BaseModel):
         return len(self.items) + len(self.templates) + len(self.locations) + len(self.users)
 
 
-class ImportResult(BaseModel):
+class ImportResult(Schema):
     created: int
     by_template: dict[str, int] = Field(default_factory=dict)

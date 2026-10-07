@@ -51,7 +51,7 @@ class ChildSlotIn(BaseModel):
     max_count: int | None = Field(default=None, ge=1, description="None = no limit")
 
 
-class ChildSlotOut(BaseModel):
+class ChildSlotOut(Schema):
     template: TemplateRef
     min_count: int = 0
     max_count: int | None = None
@@ -83,7 +83,7 @@ class TemplateUpdate(BaseModel):
     )
 
 
-class StateCountsOut(BaseModel):
+class StateCountsOut(Schema):
     built: int = 0
     ok: int = 0
     faulty: int = 0
@@ -122,7 +122,7 @@ class FieldGroupFieldOut(Schema):
     options_display: list[str] = Field(default_factory=list)
 
 
-class FieldGroupOut(BaseModel):
+class FieldGroupOut(Schema):
     id: int
     name: str
     description: str | None = None
