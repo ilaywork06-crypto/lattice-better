@@ -1,0 +1,16 @@
+[project]
+name = "lattice-shared"
+version = "2.0.0"
+description = "The event contract and small utilities shared by Lattice services"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.7",
+    "redis>=5.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lattice_shared"]
