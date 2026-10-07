@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { createContext, useCallback, useContext, useEffect, useMemo, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { onUnauthorized, tokenStore } from '@/api/client'
 import * as endpoints from '@/api/endpoints'
 import type { ChangeAction, Me, Permission } from '@/api/types'
@@ -19,7 +19,9 @@ const Ctx = createContext<Session | null>(null)
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const qc = useQueryClient()
-  const hasToken = !!tokenStore.get()
+  // Kept in state (not just read from storage) so signing in/out re-renders.
+  const [token, setToken] = useState(tokenStore.get)
+  const hasToken = !!token
   const me = useQuery({
     queryKey: ['me'],
     queryFn: endpoints.auth.me,
@@ -30,8 +32,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(() => {
     tokenStore.set(null)
+    setToken(null)
     qc.clear()
-    qc.setQueryData(['me'], null)
   }, [qc])
 
   useEffect(() => onUnauthorized(signOut), [signOut])
@@ -41,6 +43,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       const out = await endpoints.auth.signIn(email, password)
       tokenStore.set(out.access_token)
       qc.setQueryData(['me'], out.user)
+      setToken(out.access_token)
       return out.user
     },
     [qc],
