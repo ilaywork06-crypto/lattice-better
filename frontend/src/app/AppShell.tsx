@@ -109,7 +109,7 @@ function UserMenu() {
       <MenuTrigger asChild>
         <button className="flex items-center gap-2 rounded-full p-0.5 pe-2 hover:bg-muted" aria-label={t('prefs.account')}>
           <Avatar name={user.full_name} size={30} />
-          <span className="hidden max-w-32 truncate text-[13px] font-medium md:block">{user.full_name}</span>
+          <span dir="auto" className="hidden max-w-32 truncate text-[13px] font-medium md:block">{user.full_name}</span>
         </button>
       </MenuTrigger>
       <MenuContent className="w-64">

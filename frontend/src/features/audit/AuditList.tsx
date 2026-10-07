@@ -36,14 +36,14 @@ export function AuditList({ entries, loading }: { entries?: AuditEntry[]; loadin
               <Icon className="size-4" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-sm">{e.summary}</p>
+              <p className="text-sm" dir="auto">{e.summary}</p>
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                 <span className="rounded bg-subtle px-1.5 py-0.5 font-medium">
                   {auditActionLabel(t, e.action, (k) => i18n.exists(k))}
                 </span>
                 {e.user_name && <span className="inline-flex items-center gap-1.5"><Avatar name={e.user_name} size={16} /> {e.user_name}</span>}
                 <span title={formatDateTime(e.created_at)}>{timeAgo(e.created_at)}</span>
-                {e.item_id && e.subject && <Link to={`/items/${e.item_id}`} className="hover:text-primary">{e.subject}</Link>}
+                {e.item_id && e.subject && <Link to={`/items/${e.item_id}`} className="hover:text-primary"><bdi>{e.subject}</bdi></Link>}
                 {!e.item_id && e.template_id && e.subject && <Link to={`/templates/${e.template_id}`} className="hover:text-primary">{e.subject}</Link>}
               </div>
             </div>

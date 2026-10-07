@@ -148,14 +148,16 @@ class WorkflowService(Service):
                 else target.template.type if target.template
                 else getattr(command, "type", None)
             )
+            target_name = target.name or getattr(command, "name", None)
             if data.action == ChangeAction.CREATE:
-                item_type = self.uow.templates.require(command.template_id).type
+                template = self.uow.templates.require(command.template_id)
+                item_type, target_name = template.type, template.name
             cr = ChangeRequest(
                 action=data.action,
                 item_id=target.item.id if target.item else None,
                 template_id=target.template.id if target.template else None,
                 item_type=item_type,
-                target_name=target.name or getattr(command, "name", None),
+                target_name=target_name,
                 payload=command.model_dump(mode="json", exclude_unset=True),
                 description=spec.describe(self.services, target, command),
                 reason=data.reason.strip(),

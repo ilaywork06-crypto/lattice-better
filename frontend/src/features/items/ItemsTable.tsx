@@ -83,7 +83,7 @@ export function ItemsTable({
                 <div className="flex min-w-0 items-center gap-3">
                   {showTemplate && <TypeIcon type={r.type} size="sm" />}
                   <div className="min-w-0">
-                    {showTemplate && <div className="truncate font-medium">{r.name}</div>}
+                    {showTemplate && <div dir="auto" className="truncate text-start font-medium">{r.name}</div>}
                     <Serial value={r.serial} className={showTemplate ? 'text-muted-foreground' : 'font-medium'} />
                   </div>
                   {showTemplate && <CardTypeBadge cardType={r.card_type} />}

@@ -17,6 +17,7 @@ import { CHANGE_STATUS_TONE } from '@/lib/domain'
 import { formatNumber, timeAgo } from '@/lib/format'
 import { useSession } from '@/lib/session'
 import { AuditList } from '@/features/audit/AuditList'
+import { useDescribeChange } from '@/features/workflow/describe'
 
 function greeting(t: (k: string) => string) {
   const h = new Date().getHours()
@@ -122,6 +123,7 @@ function Attention() {
   const { can } = useSession()
   const thresholds = useThresholds()
   const pending = useChangeRequests({ status: 'pending', limit: 5, mine: !can('review_changes') })
+  const describe = useDescribeChange()
   const low = (thresholds.data ?? []).filter((x) => x.is_low)
   return (
     <Card>
@@ -160,7 +162,7 @@ function Attention() {
               {pending.data.items.map((cr) => (
                 <Link key={cr.id} to={`/change-requests/${cr.id}`} className="flex items-center gap-3 py-2 hover:text-primary">
                   <GitPullRequestArrow className="size-4 shrink-0 text-muted-foreground" />
-                  <span className="min-w-0 flex-1 truncate text-[13px]">{cr.description}</span>
+                  <span className="min-w-0 flex-1 truncate text-[13px]">{describe(cr)}</span>
                   <span className="shrink-0 text-xs text-muted-foreground">{timeAgo(cr.created_at)}</span>
                   <Badge tone={CHANGE_STATUS_TONE[cr.status]}>{t(`enums.changeStatus.${cr.status}`)}</Badge>
                 </Link>
@@ -174,7 +176,7 @@ function Attention() {
 }
 
 export default function DashboardPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { user, can } = useSession()
   const summary = useSummary()
@@ -187,7 +189,7 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-muted-foreground">{new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+          <p className="text-sm text-muted-foreground">{new Date().toLocaleDateString(i18n.language === 'he' ? 'he-IL' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight">{greeting(t)}, {first}</h1>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -201,7 +203,8 @@ export default function DashboardPage() {
         {!s ? [0, 1, 2, 3, 4, 5].map((i) => <Skeleton key={i} className="h-[118px] rounded-xl" />) : (
           <>
             <Stat label={t('dashboard.available')} value={formatNumber(s.cards_available)} icon={<Warehouse />} tone="success"
-              hint={t('dashboard.ofCards', { count: s.cards })} onClick={() => navigate('/inventory')} />
+              hint={s.low_stock ? t('dashboard.lowCount', { count: s.low_stock }) : t('dashboard.ofCards', { count: s.cards })}
+              onClick={() => navigate('/inventory')} />
             <Stat label={t('enums.typePlural.card')} value={formatNumber(s.cards)} icon={<CircuitBoard />} tone="info"
               hint={t('dashboard.inUse', { count: s.cards_in_use })} onClick={() => navigate('/cards')} />
             <Stat label={t('enums.typePlural.assembly')} value={formatNumber(s.assemblies)} icon={<Cpu />} tone="primary" onClick={() => navigate('/assemblies')} />
@@ -209,7 +212,7 @@ export default function DashboardPage() {
             <Stat label={t('dashboard.faulty')} value={formatNumber(s.faulty_items)} icon={<AlertTriangle />} tone={s.faulty_items ? 'danger' : 'neutral'}
               onClick={() => navigate('/cards?view=units')} />
             <Stat label={t('dashboard.pending')} value={formatNumber(s.pending_change_requests)} icon={<GitPullRequestArrow />}
-              tone={s.pending_change_requests ? 'warning' : 'neutral'} hint={s.low_stock ? t('dashboard.lowCount', { count: s.low_stock }) : undefined}
+              tone={s.pending_change_requests ? 'warning' : 'neutral'}
               onClick={() => navigate('/change-requests')} />
           </>
         )}

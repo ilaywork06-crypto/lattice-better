@@ -38,7 +38,9 @@ export function FieldInput({
   id,
   disabled,
   initialFiles,
+  required,
 }: {
+  required?: boolean
   field: FieldShape
   value: unknown
   onChange: (v: unknown) => void
@@ -106,12 +108,14 @@ export function FieldInput({
       return <Input {...common} type="url" dir="ltr" placeholder="https://" value={(value as string) ?? ''} onChange={(e) => onChange(e.target.value)} />
     case 'enum':
       return (
-        <Select id={id} value={(value as string) ?? null} onChange={onChange} disabled={disabled} noneLabel={t('common.none')}
+        <Select id={id} value={(value as string) ?? null} onChange={onChange} disabled={disabled}
+          noneLabel={required ? undefined : t('common.none')} placeholder={t('fieldInput.choose')}
           options={((config.options as string[]) ?? []).map((o) => ({ value: o, label: o }))} />
       )
     case 'letter':
       return (
-        <Select id={id} value={(value as string) ?? null} onChange={onChange} disabled={disabled} noneLabel={t('common.none')}
+        <Select id={id} value={(value as string) ?? null} onChange={onChange} disabled={disabled}
+          noneLabel={required ? undefined : t('common.none')} placeholder={t('fieldInput.choose')}
           options={LETTERS.map((l) => ({ value: l, label: l }))} />
       )
     case 'date':

@@ -213,7 +213,7 @@ export default function TemplateEditorPage({ mode }: { mode: Mode }) {
   const valid = draft.name.trim() && /^[A-Za-z]{3}$/.test(draft.serial_prefix) && draft.fields.every((f) => f.label.trim())
 
   return (
-    <div className="pb-24">
+    <div>
       <Link to={mode === 'create' ? '/templates' : `/templates/${id}`} className="mb-4 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground">
         <ArrowLeft className="size-3.5 rtl:rotate-180" /> {t('common.back')}
       </Link>
@@ -305,8 +305,8 @@ export default function TemplateEditorPage({ mode }: { mode: Mode }) {
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/85 backdrop-blur-md lg:start-auto">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-end gap-2 px-4 py-3 lg:px-8">
+      <div className="sticky bottom-0 z-20 -mx-4 -mb-6 mt-6 border-t border-border bg-background/85 backdrop-blur-md lg:-mx-8 lg:-mb-8">
+        <div className="flex items-center justify-end gap-2 px-4 py-3 lg:px-8">
           {workflow === 'propose' && <span className="me-auto hidden text-[13px] text-muted-foreground sm:block">{t('workflow.proposeHint')}</span>}
           <Button variant="ghost" onClick={() => navigate(-1)}>{t('common.cancel')}</Button>
           {workflow === 'direct' ? (

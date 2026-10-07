@@ -167,6 +167,7 @@ export function ItemFormDialog({
                 error={issueFor(f.key)}
                 className={cn(['description', 'files', 'managers'].includes(f.field_type) && 'sm:col-span-2')}
                 aside={f.mode === 'choice' ? <Badge tone="outline">{t('enums.fieldMode.choice')}</Badge> : undefined}
+                hint={!editing && f.field_type === 'location' && tpl.type === 'card' && !values[f.key] ? t('itemForm.locationHint') : undefined}
               >
                 <FieldInput
                   field={f}
@@ -176,6 +177,7 @@ export function ItemFormDialog({
                   holdsTemplateId={tpl.id}
                   invalid={!!issueFor(f.key)}
                   initialFiles={item?.fields.find((x) => x.key === f.key)?.display as never}
+                  required={f.required}
                 />
               </Field>
             ))}

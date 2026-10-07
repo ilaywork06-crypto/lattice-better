@@ -55,7 +55,7 @@ export function NotificationRow({ n, compact, onNavigate }: { n: Notification; c
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-start gap-2">
-          <div className={cn('flex-1 text-[13.5px] leading-snug', !n.read && 'font-semibold')}>{n.title}</div>
+          <div dir="auto" className={cn('flex-1 text-start text-[13.5px] leading-snug', !n.read && 'font-semibold')}>{n.title}</div>
           {!n.read && <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" />}
         </div>
         {components.length > 0 && !compact ? (
@@ -80,7 +80,7 @@ export function NotificationRow({ n, compact, onNavigate }: { n: Notification; c
             </table>
           </div>
         ) : (
-          <p className={cn('mt-0.5 whitespace-pre-line text-[13px] text-muted-foreground', compact && 'line-clamp-2')}>{n.body}</p>
+          <p dir="auto" className={cn('mt-0.5 whitespace-pre-line text-start text-[13px] text-muted-foreground', compact && 'line-clamp-2')}>{n.body}</p>
         )}
         <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
           <span>{timeAgo(n.created_at)}</span>
