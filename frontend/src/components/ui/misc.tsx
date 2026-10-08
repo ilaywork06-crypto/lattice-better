@@ -60,11 +60,11 @@ export function Progress({
   className?: string
 }) {
   const pct = max > 0 ? Math.max(0, Math.min(100, (value / max) * 100)) : 0
-  // A touch lighter than the solid tokens, to sit with the pastel themes.
-  const colors = { primary: 'bg-primary/85', success: 'bg-success/80', warning: 'bg-warning/85', danger: 'bg-danger/75' }
+  const colors = { primary: 'bg-primary', success: 'bg-success', warning: 'bg-warning', danger: 'bg-danger' }
   return (
     <div className={cn('h-1.5 w-full overflow-hidden rounded-full bg-subtle', className)}>
-      <div className={cn('h-full rounded-full transition-all', colors[tone])} style={{ width: `${pct}%` }} />
+      {/* --bar-opacity: a touch lighter in the pastel themes */}
+      <div className={cn('h-full rounded-full transition-all', colors[tone])} style={{ width: `${pct}%`, opacity: 'var(--bar-opacity)' }} />
     </div>
   )
 }

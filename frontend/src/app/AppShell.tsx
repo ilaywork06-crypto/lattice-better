@@ -143,14 +143,14 @@ function UserMenu() {
         <MenuLabel className="flex items-center gap-2">
           <Palette className="size-3.5" /> {t('prefs.accent')}
         </MenuLabel>
-        <div className="grid grid-cols-8 gap-1 px-2.5 pb-1 pt-1">
+        <div className="grid w-fit grid-cols-5 gap-2 px-2.5 pb-1 pt-1">
           {ACCENTS.map((a) => (
             <Tooltip key={a} content={t(`prefs.accents.${a}`)}>
               <button
                 onClick={() => setAccent(a)}
                 aria-label={t(`prefs.accents.${a}`)}
                 aria-pressed={accent === a}
-                className="grid size-6 place-items-center rounded-full transition-transform hover:scale-110"
+                className="grid size-7 place-items-center rounded-full transition-transform hover:scale-110"
                 style={{
                   background: `linear-gradient(135deg, ${ACCENT_SWATCH[a].soft} 45%, ${ACCENT_SWATCH[a].strong})`,
                   boxShadow: accent === a ? `0 0 0 2px var(--popover), 0 0 0 4px ${ACCENT_SWATCH[a].strong}` : 'inset 0 0 0 1px oklch(0 0 0 / 0.06)',

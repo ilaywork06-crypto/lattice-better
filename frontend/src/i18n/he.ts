@@ -24,7 +24,7 @@ const he: Translation<Messages> = {
   },
   prefs: {
     account: 'חשבון', theme: 'ערכת נושא', light: 'בהירה', dark: 'כהה', system: 'מערכת', accent: 'ערכת צבעים',
-    accents: { classic: 'קלאסי שחור-לבן', periwinkle: 'פריווינקל', lavender: 'לבנדר', blush: 'ורוד', peach: 'אפרסק', butter: 'חמאה', mint: 'מנטה', sky: 'שמיים' },
+    accents: { indigo: 'אינדיגו', classic: 'קלאסי שחור-לבן', periwinkle: 'פריווינקל', lavender: 'לבנדר', blush: 'ורוד', peach: 'אפרסק', butter: 'חמאה', mint: 'מנטה', sky: 'שמיים' },
     language: 'שפה',
   },
   auth: { signOut: 'התנתקות' },

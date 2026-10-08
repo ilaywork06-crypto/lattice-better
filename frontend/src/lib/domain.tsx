@@ -21,11 +21,11 @@ export const FIELD_MODES: FieldMode[] = ['fixed', 'choice', 'item']
 
 export const TYPE_ICON: Record<ItemType, LucideIcon> = { setup: Server, assembly: Cpu, card: CircuitBoard }
 export const TYPE_TONE: Record<ItemType, BadgeTone> = { setup: 'violet', assembly: 'teal', card: 'blue' }
-/** Raw colours for canvases (graph, charts). */
+/** Raw colours for canvases (graph, charts); set per colour theme in styles/index.css. */
 export const TYPE_COLOR: Record<ItemType, string> = {
-  setup: 'oklch(0.66 0.12 300)',
-  assembly: 'oklch(0.67 0.09 185)',
-  card: 'oklch(0.66 0.11 250)',
+  setup: 'var(--type-setup)',
+  assembly: 'var(--type-assembly)',
+  card: 'var(--type-card)',
 }
 
 export const STATE_TONE: Record<ItemState, BadgeTone> = {
