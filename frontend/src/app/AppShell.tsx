@@ -143,7 +143,7 @@ function UserMenu() {
         <MenuLabel className="flex items-center gap-2">
           <Palette className="size-3.5" /> {t('prefs.accent')}
         </MenuLabel>
-        <div className="grid grid-cols-7 gap-1.5 px-2.5 pb-1 pt-1">
+        <div className="grid w-fit grid-cols-5 gap-2 px-2.5 pb-1 pt-1">
           {ACCENTS.map((a) => (
             <Tooltip key={a} content={t(`prefs.accents.${a}`)}>
               <button

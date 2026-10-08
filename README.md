@@ -68,7 +68,7 @@ The core API's suite (74 tests) runs on SQLite by default and on PostgreSQL when
 - **Hierarchy** — containers list which templates may sit inside them with **min/max counts**; links are validated, incomplete items are flagged, moves cascade downward, and a linked item has no location of its own. Graphs of the template structure, of every tree built from a template, and of one item in context.
 - **Stock** — per card template: ready to build (built/OK in the desiccator), in the desiccator, in use, assembled, faulty. The **desiccator is a set of locations**. **Thresholds** alert the managers of those cards (one digest each) — only for the templates a change actually affected.
 - **Workflow** — managers change things directly; editors **propose** any change and viewers may propose a move. The same dialogs do both. Approving runs the exact use case a manager would.
-- **Everything else** — floor-plan map with drawable buildings, documents (real uploads), Excel import (all-or-nothing, every bad cell listed) and export, audit log with "my items" and Excel export, in-app + email notifications, global ⌘K search, English and Hebrew (RTL), light/dark and seven pastel colour themes.
+- **Everything else** — floor-plan map with drawable buildings, documents (real uploads), Excel import (all-or-nothing, every bad cell listed) and export, audit log with "my items" and Excel export, in-app + email notifications, global ⌘K search, English and Hebrew (RTL), light/dark, and nine colour themes: indigo (the original look), classic black & white and seven pastels.
 
 ---
 

@@ -4,11 +4,13 @@ import type { Language } from '@/i18n'
 import { store } from './storage'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
-/** The pastel colour themes; their palettes live in styles/index.css. */
-export const ACCENTS = ['periwinkle', 'lavender', 'blush', 'peach', 'butter', 'mint', 'sky'] as const
+/** Indigo (the original look), classic black & white and the pastel themes; palettes live in styles/index.css. */
+export const ACCENTS = ['indigo', 'classic', 'periwinkle', 'lavender', 'blush', 'peach', 'butter', 'mint', 'sky'] as const
 export type Accent = (typeof ACCENTS)[number]
 /** Swatch for the picker: the theme's pastel and its deeper primary. */
 export const ACCENT_SWATCH: Record<Accent, { soft: string; strong: string }> = {
+  indigo: { soft: 'oklch(0.97 0.004 260)', strong: 'oklch(0.52 0.21 275)' },
+  classic: { soft: 'oklch(0.97 0 0)', strong: 'oklch(0.22 0 0)' },
   periwinkle: { soft: 'oklch(0.86 0.07 268)', strong: 'oklch(0.57 0.13 268)' },
   lavender: { soft: 'oklch(0.86 0.07 302)', strong: 'oklch(0.57 0.13 302)' },
   blush: { soft: 'oklch(0.87 0.07 355)', strong: 'oklch(0.6 0.14 355)' },
@@ -18,7 +20,7 @@ export const ACCENT_SWATCH: Record<Accent, { soft: string; strong: string }> = {
   sky: { soft: 'oklch(0.87 0.06 232)', strong: 'oklch(0.58 0.12 232)' },
 }
 /** Themes saved before the pastel palettes map to their nearest pastel. */
-const LEGACY_ACCENT: Record<string, Accent> = { indigo: 'periwinkle', violet: 'lavender', rose: 'blush', amber: 'peach', teal: 'mint' }
+const LEGACY_ACCENT: Record<string, Accent> = { violet: 'lavender', rose: 'blush', amber: 'peach', teal: 'mint' }
 
 interface Preferences {
   theme: ThemeMode
@@ -43,7 +45,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
   const [systemDark, setSystemDark] = useState(() => media().matches)
   const [accent, setAccentState] = useState<Accent>(() => {
     const a = store.get('accent') ?? ''
-    return ACCENTS.includes(a as Accent) ? (a as Accent) : LEGACY_ACCENT[a] ?? 'periwinkle'
+    return ACCENTS.includes(a as Accent) ? (a as Accent) : LEGACY_ACCENT[a] ?? 'indigo'
   })
   const [sidebarCollapsed, setCollapsed] = useState(() => store.get('sidebar') === 'collapsed')
 
