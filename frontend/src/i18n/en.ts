@@ -19,7 +19,7 @@ const en = {
   },
   prefs: {
     account: 'Account', theme: 'Theme', light: 'Light', dark: 'Dark', system: 'System', accent: 'Colour theme',
-    accents: { periwinkle: 'Periwinkle', lavender: 'Lavender', blush: 'Blush', peach: 'Peach', butter: 'Butter', mint: 'Mint', sky: 'Sky' },
+    accents: { classic: 'Classic black & white', periwinkle: 'Periwinkle', lavender: 'Lavender', blush: 'Blush', peach: 'Peach', butter: 'Butter', mint: 'Mint', sky: 'Sky' },
     language: 'Language',
   },
   auth: { signOut: 'Sign out' },

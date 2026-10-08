@@ -4,11 +4,12 @@ import type { Language } from '@/i18n'
 import { store } from './storage'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
-/** The pastel colour themes; their palettes live in styles/index.css. */
-export const ACCENTS = ['periwinkle', 'lavender', 'blush', 'peach', 'butter', 'mint', 'sky'] as const
+/** Classic black & white plus the pastel colour themes; palettes live in styles/index.css. */
+export const ACCENTS = ['classic', 'periwinkle', 'lavender', 'blush', 'peach', 'butter', 'mint', 'sky'] as const
 export type Accent = (typeof ACCENTS)[number]
 /** Swatch for the picker: the theme's pastel and its deeper primary. */
 export const ACCENT_SWATCH: Record<Accent, { soft: string; strong: string }> = {
+  classic: { soft: 'oklch(0.97 0 0)', strong: 'oklch(0.22 0 0)' },
   periwinkle: { soft: 'oklch(0.86 0.07 268)', strong: 'oklch(0.57 0.13 268)' },
   lavender: { soft: 'oklch(0.86 0.07 302)', strong: 'oklch(0.57 0.13 302)' },
   blush: { soft: 'oklch(0.87 0.07 355)', strong: 'oklch(0.6 0.14 355)' },

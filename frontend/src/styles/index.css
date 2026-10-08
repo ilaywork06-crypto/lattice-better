@@ -82,6 +82,23 @@
   --shadow-color: 250 40% 2%;
 }
 
+/* Classic: plain white and black, no tint — black primary in light, white in dark. */
+:root[data-accent='classic'] {
+  --tint: 0;
+  --primary-l: 0.22;
+  --primary-c: 0;
+  --primary-soft: oklch(0.94 0 0);
+  --primary-soft-foreground: oklch(0.28 0 0);
+  --ring: oklch(0.55 0 0 / 0.4);
+}
+.dark[data-accent='classic'] {
+  --primary: oklch(0.96 0 0);
+  --primary-foreground: oklch(0.17 0 0);
+  --primary-soft: oklch(0.3 0 0);
+  --primary-soft-foreground: oklch(0.92 0 0);
+  --ring: oklch(0.8 0 0 / 0.4);
+}
+
 /* The pastel themes (ids match ACCENTS in lib/preferences.tsx). */
 :root[data-accent='lavender'] { --hue: 302; }
 :root[data-accent='blush'] { --hue: 355; --primary-l: 0.6; --primary-c: 0.14; }
