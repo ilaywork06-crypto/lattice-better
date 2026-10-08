@@ -16,8 +16,10 @@ export function useUrlState(key: string, fallback = ''): [string, (v: string) =>
   const value = params.get(key) ?? fallback
   const set = (v: string) =>
     setParams(
-      (prev) => {
-        const next = new URLSearchParams(prev)
+      () => {
+        // Start from the live URL, not react-router's render-time `prev`, so that
+        // several setters called in one handler compose instead of overwriting.
+        const next = new URLSearchParams(window.location.search)
         if (!v || v === fallback) next.delete(key)
         else next.set(key, v)
         return next
