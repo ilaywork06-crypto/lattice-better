@@ -45,7 +45,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
   const [systemDark, setSystemDark] = useState(() => media().matches)
   const [accent, setAccentState] = useState<Accent>(() => {
     const a = store.get('accent') ?? ''
-    return ACCENTS.includes(a as Accent) ? (a as Accent) : LEGACY_ACCENT[a] ?? 'periwinkle'
+    return ACCENTS.includes(a as Accent) ? (a as Accent) : LEGACY_ACCENT[a] ?? 'indigo'
   })
   const [sidebarCollapsed, setCollapsed] = useState(() => store.get('sidebar') === 'collapsed')
 

@@ -12,7 +12,7 @@
         const t = localStorage.getItem('lattice.theme') || 'system'
         const dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
         document.documentElement.classList.toggle('dark', dark)
-        const a = localStorage.getItem('lattice.accent') || 'periwinkle'
+        const a = localStorage.getItem('lattice.accent') || 'indigo'
         const legacy = { violet: 'lavender', rose: 'blush', amber: 'peach', teal: 'mint' }
         document.documentElement.dataset.accent = legacy[a] || a
         const lng = localStorage.getItem('lattice.lang')
