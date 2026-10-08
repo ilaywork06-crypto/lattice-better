@@ -74,9 +74,9 @@ function StockChart() {
   const rows = [...(stock.data ?? [])].sort((a, b) => b.total - a.total).slice(0, 8)
   const max = Math.max(1, ...rows.map((r) => r.total))
   const parts = [
-    { key: 'available', color: 'var(--success)' },
+    { key: 'available', color: 'color-mix(in oklch, var(--success) 80%, var(--card))' },
     { key: 'desiccatorOther', color: 'color-mix(in oklch, var(--info) 60%, transparent)' },
-    { key: 'assembled', color: 'oklch(0.6 0.17 300)' },
+    { key: 'assembled', color: 'oklch(0.72 0.11 300)' },
     { key: 'in_use', color: 'var(--input)' },
   ] as const
   return (

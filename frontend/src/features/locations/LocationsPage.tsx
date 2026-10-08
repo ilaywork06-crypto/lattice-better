@@ -1,6 +1,6 @@
-import { Building2, Crosshair, Droplets, MapPin, PencilRuler, Plus, Save, Search, Trash2 } from 'lucide-react'
+import { Building2, Crosshair, Droplets, MapPin, Maximize2, Minimize2, PencilRuler, Plus, Save, Search, Trash2 } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import * as E from '@/api/endpoints'
@@ -18,11 +18,13 @@ import { Field } from '@/components/ui/label'
 import { EmptyState, PageHeader, Skeleton } from '@/components/ui/misc'
 import { cn } from '@/lib/cn'
 import { useUrlState } from '@/lib/hooks'
+import { store } from '@/lib/storage'
 import { useSession } from '@/lib/session'
 
 type Draft = { name: string; building: string; room: string; x: number; y: number; notes: string; is_desiccator: boolean }
 const blank: Draft = { name: '', building: '', room: '', x: 50, y: 50, notes: '', is_desiccator: false }
-const COLORS = ['#6366f1', '#14b8a6', '#f59e0b', '#0ea5e9', '#ec4899', '#84cc16', '#a855f7', '#64748b']
+// Pastel building colours, in step with the colour themes.
+const COLORS = ['#8d9cf0', '#5cbfae', '#eea86a', '#6fb8e6', '#ec93b6', '#9ccb6a', '#b39af0', '#94a3b8']
 
 function LocationEditor({ location, pick, onDone }: {
   location: Location | null; pick: { x: number; y: number } | null; onDone: (id?: number) => void
@@ -132,7 +134,15 @@ export default function LocationsPage() {
   const [buildingId, setBuildingId] = useState<number | null>(null)
   const [pick, setPick] = useState<{ x: number; y: number } | null>(null)
   const [search, setSearch] = useState('')
+  // Large map: the side panel moves below and the map takes the full width.
+  const [large, setLargeState] = useState(() => store.get('map.large') === '1')
+  const setLarge = (v: boolean) => { store.set('map.large', v ? '1' : null); setLargeState(v) }
   const selectedId = selectedParam ? Number(selectedParam) : null
+  const panel = useRef<HTMLDivElement>(null)
+  // With the large map the panel sits below it: bring what was just opened into view.
+  useEffect(() => {
+    if (large && (selectedId || creating || buildingId)) panel.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [large, selectedId, creating, buildingId])
   const selected = locations.data?.find((l) => l.id === selectedId) ?? null
   const createBuilding = useAction(E.locations.createBuilding, { onSuccess: (b) => setBuildingId(b.id) })
   const changeBuilding = useAction(({ id, r }: { id: number; r: Partial<Building> }) => E.locations.updateBuilding(id, r))
@@ -158,8 +168,10 @@ export default function LocationsPage() {
           {can('write_locations') && <Button variant="primary" onClick={() => { setCreating(true); setPick(null); setSelectedParam('') }}><Plus /> {t('locations.new')}</Button>}
         </>}
       />
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className={cn('grid gap-6', !large && 'xl:grid-cols-[minmax(0,1fr)_340px]')}>
         <Card className="p-3">
+          {/* As large as the column allows, but never taller than the screen. */}
+          <div className="mx-auto w-full" style={{ maxWidth: 'max(36rem, calc((100dvh - 15rem) * 1.6))' }}>
           {locations.isPending ? <Skeleton className="aspect-[16/10]" /> : (
             <FloorPlan
               locations={locations.data ?? []}
@@ -179,14 +191,18 @@ export default function LocationsPage() {
               }}
             />
           )}
+          </div>
           <div className="mt-3 flex flex-wrap items-center gap-4 px-1 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1.5"><span className="grid size-4 place-items-center rounded-full bg-foreground/80"><MapPin className="size-2.5 text-background" /></span>{t('locations.legendLocation')}</span>
             <span className="inline-flex items-center gap-1.5"><span className="grid size-4 place-items-center rounded-full bg-info"><Droplets className="size-2.5 text-white" /></span>{t('locations.desiccator')}</span>
-            {editingMap && <span className="ms-auto inline-flex items-center gap-1.5 text-primary"><Building2 className="size-3.5" />{t('locations.drawHint')}</span>}
+            {editingMap && <span className="inline-flex items-center gap-1.5 text-primary"><Building2 className="size-3.5" />{t('locations.drawHint')}</span>}
+            <Button size="sm" variant="ghost" className="ms-auto hidden xl:inline-flex" onClick={() => setLarge(!large)}>
+              {large ? <Minimize2 /> : <Maximize2 />} {large ? t('locations.mapSmaller') : t('locations.mapLarger')}
+            </Button>
           </div>
         </Card>
 
-        <div className="flex flex-col gap-6">
+        <div ref={panel} className={cn('flex scroll-mt-6 flex-col gap-6', large && 'xl:grid xl:grid-cols-2 xl:items-start')}>
           {editingMap && building ? (
             <Card>
               <CardHeader icon={<Building2 />} title={t('locations.buildingTitle')} />
