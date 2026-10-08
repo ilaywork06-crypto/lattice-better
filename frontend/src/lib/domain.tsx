@@ -23,9 +23,9 @@ export const TYPE_ICON: Record<ItemType, LucideIcon> = { setup: Server, assembly
 export const TYPE_TONE: Record<ItemType, BadgeTone> = { setup: 'violet', assembly: 'teal', card: 'blue' }
 /** Raw colours for canvases (graph, charts). */
 export const TYPE_COLOR: Record<ItemType, string> = {
-  setup: 'oklch(0.6 0.17 300)',
-  assembly: 'oklch(0.62 0.11 185)',
-  card: 'oklch(0.6 0.15 250)',
+  setup: 'oklch(0.66 0.12 300)',
+  assembly: 'oklch(0.67 0.09 185)',
+  card: 'oklch(0.66 0.11 250)',
 }
 
 export const STATE_TONE: Record<ItemState, BadgeTone> = {

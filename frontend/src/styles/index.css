@@ -5,81 +5,90 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ───────────── Design tokens ─────────────
-   Every colour the UI uses is a variable, so light/dark and the accent colour
-   are pure CSS: no component knows which theme is active. */
+   Every colour the UI uses is a variable, so light/dark and the colour theme
+   are pure CSS: no component knows which theme is active.
+
+   Themes are pastel palettes built from one hue (--hue): the surfaces get a
+   whisper of it, soft fills a pastel of it, and the primary a deeper, dusty
+   tone of it that still carries white text. --tint scales how coloured the
+   surfaces are; --primary-l / --primary-c tune the primary per hue (yellows
+   need to be darker and less chromatic to stay readable). */
 :root {
-  --background: oklch(0.985 0.002 260);
-  --foreground: oklch(0.21 0.02 265);
-  --card: oklch(1 0 0);
+  --hue: 268;
+  --tint: 1;
+  --primary-l: 0.57;
+  --primary-c: 0.13;
+
+  --background: oklch(0.978 calc(0.011 * var(--tint)) var(--hue));
+  --foreground: oklch(0.24 calc(0.025 * var(--tint)) var(--hue));
+  --card: oklch(0.997 calc(0.003 * var(--tint)) var(--hue));
   --card-foreground: var(--foreground);
-  --popover: oklch(1 0 0);
-  --muted: oklch(0.965 0.004 260);
-  --muted-foreground: oklch(0.52 0.02 262);
-  --subtle: oklch(0.94 0.006 260);
-  --border: oklch(0.915 0.006 260);
-  --input: oklch(0.89 0.008 260);
-  --sidebar: oklch(0.975 0.003 260);
+  --popover: oklch(0.997 calc(0.003 * var(--tint)) var(--hue));
+  --muted: oklch(0.958 calc(0.016 * var(--tint)) var(--hue));
+  --muted-foreground: oklch(0.51 calc(0.028 * var(--tint)) var(--hue));
+  --subtle: oklch(0.935 calc(0.024 * var(--tint)) var(--hue));
+  --border: oklch(0.915 calc(0.02 * var(--tint)) var(--hue));
+  --input: oklch(0.885 calc(0.026 * var(--tint)) var(--hue));
+  --sidebar: oklch(0.958 calc(0.022 * var(--tint)) var(--hue));
 
-  --primary: oklch(0.52 0.21 275);
-  --primary-foreground: oklch(0.99 0 0);
-  --primary-soft: oklch(0.95 0.035 275);
-  --primary-soft-foreground: oklch(0.42 0.19 275);
-  --ring: oklch(0.62 0.17 275 / 0.45);
+  --primary: oklch(var(--primary-l) var(--primary-c) var(--hue));
+  --primary-foreground: oklch(0.995 0.005 var(--hue));
+  --primary-soft: oklch(0.925 0.05 var(--hue));
+  --primary-soft-foreground: oklch(0.42 calc(var(--primary-c) * 0.85) var(--hue));
+  --ring: oklch(0.72 0.11 var(--hue) / 0.5);
 
-  --success: oklch(0.6 0.15 155);
-  --success-soft: oklch(0.95 0.045 155);
-  --warning: oklch(0.72 0.16 70);
-  --warning-soft: oklch(0.96 0.06 85);
-  --danger: oklch(0.58 0.22 25);
-  --danger-soft: oklch(0.95 0.035 25);
-  --info: oklch(0.6 0.15 240);
-  --info-soft: oklch(0.95 0.035 240);
+  /* Status colours stay recognisable in every theme, in the same soft key. */
+  --success: oklch(0.6 0.13 158);
+  --success-soft: oklch(0.94 0.05 158);
+  --warning: oklch(0.72 0.14 70);
+  --warning-soft: oklch(0.95 0.06 85);
+  --danger: oklch(0.6 0.18 22);
+  --danger-soft: oklch(0.94 0.04 18);
+  --info: oklch(0.62 0.12 235);
+  --info-soft: oklch(0.94 0.04 235);
 
-  --shadow-color: 230 20% 20%;
+  --shadow-color: 250 25% 25%;
   --radius: 0.75rem;
 }
 
 .dark {
-  --background: oklch(0.16 0.012 265);
-  --foreground: oklch(0.95 0.005 260);
-  --card: oklch(0.2 0.014 265);
-  --popover: oklch(0.22 0.015 265);
-  --muted: oklch(0.235 0.014 265);
-  --muted-foreground: oklch(0.7 0.015 262);
-  --subtle: oklch(0.27 0.016 265);
-  --border: oklch(0.29 0.016 265);
-  --input: oklch(0.34 0.018 265);
-  --sidebar: oklch(0.18 0.013 265);
+  --background: oklch(0.17 calc(0.016 * var(--tint)) var(--hue));
+  --foreground: oklch(0.95 calc(0.01 * var(--tint)) var(--hue));
+  --card: oklch(0.205 calc(0.018 * var(--tint)) var(--hue));
+  --popover: oklch(0.225 calc(0.02 * var(--tint)) var(--hue));
+  --muted: oklch(0.24 calc(0.02 * var(--tint)) var(--hue));
+  --muted-foreground: oklch(0.72 calc(0.03 * var(--tint)) var(--hue));
+  --subtle: oklch(0.275 calc(0.022 * var(--tint)) var(--hue));
+  --border: oklch(0.3 calc(0.022 * var(--tint)) var(--hue));
+  --input: oklch(0.35 calc(0.026 * var(--tint)) var(--hue));
+  --sidebar: oklch(0.185 calc(0.018 * var(--tint)) var(--hue));
 
-  --primary: oklch(0.66 0.18 275);
-  --primary-foreground: oklch(0.16 0.02 275);
-  --primary-soft: oklch(0.3 0.07 275);
-  --primary-soft-foreground: oklch(0.85 0.09 275);
-  --ring: oklch(0.66 0.17 275 / 0.5);
+  /* In the dark the pastel itself is the primary, with dark text on it. */
+  --primary: oklch(0.8 calc(var(--primary-c) * 0.75) var(--hue));
+  --primary-foreground: oklch(0.2 0.04 var(--hue));
+  --primary-soft: oklch(0.31 0.06 var(--hue));
+  --primary-soft-foreground: oklch(0.88 0.07 var(--hue));
+  --ring: oklch(0.8 0.09 var(--hue) / 0.45);
 
-  --success: oklch(0.72 0.15 155);
-  --success-soft: oklch(0.3 0.06 155);
-  --warning: oklch(0.8 0.14 75);
-  --warning-soft: oklch(0.32 0.06 75);
-  --danger: oklch(0.68 0.19 25);
-  --danger-soft: oklch(0.3 0.07 25);
-  --info: oklch(0.72 0.13 240);
-  --info-soft: oklch(0.3 0.06 240);
+  --success: oklch(0.78 0.12 158);
+  --success-soft: oklch(0.31 0.05 158);
+  --warning: oklch(0.83 0.12 80);
+  --warning-soft: oklch(0.33 0.05 75);
+  --danger: oklch(0.74 0.14 20);
+  --danger-soft: oklch(0.31 0.06 20);
+  --info: oklch(0.78 0.1 235);
+  --info-soft: oklch(0.31 0.05 235);
 
-  --shadow-color: 230 40% 2%;
+  --shadow-color: 250 40% 2%;
 }
 
-/* Accent colours: only the primary hue changes. */
-:root[data-accent='violet'] { --primary: oklch(0.54 0.22 300); --primary-soft: oklch(0.95 0.035 300); --primary-soft-foreground: oklch(0.44 0.2 300); --ring: oklch(0.62 0.17 300 / 0.45); }
-:root[data-accent='teal'] { --primary: oklch(0.56 0.11 190); --primary-soft: oklch(0.95 0.03 190); --primary-soft-foreground: oklch(0.42 0.09 190); --ring: oklch(0.6 0.1 190 / 0.45); }
-:root[data-accent='rose'] { --primary: oklch(0.58 0.2 10); --primary-soft: oklch(0.95 0.03 10); --primary-soft-foreground: oklch(0.47 0.18 10); --ring: oklch(0.62 0.17 10 / 0.45); }
-:root[data-accent='amber'] { --primary: oklch(0.66 0.16 60); --primary-soft: oklch(0.96 0.05 75); --primary-soft-foreground: oklch(0.47 0.12 55); --ring: oklch(0.7 0.14 60 / 0.45); }
-:root[data-accent='sky'] { --primary: oklch(0.59 0.16 240); --primary-soft: oklch(0.95 0.03 240); --primary-soft-foreground: oklch(0.45 0.14 240); --ring: oklch(0.62 0.14 240 / 0.45); }
-.dark[data-accent='violet'] { --primary: oklch(0.7 0.17 300); --primary-soft: oklch(0.3 0.08 300); --primary-soft-foreground: oklch(0.86 0.09 300); }
-.dark[data-accent='teal'] { --primary: oklch(0.72 0.11 190); --primary-soft: oklch(0.3 0.05 190); --primary-soft-foreground: oklch(0.86 0.07 190); }
-.dark[data-accent='rose'] { --primary: oklch(0.7 0.17 10); --primary-soft: oklch(0.3 0.07 10); --primary-soft-foreground: oklch(0.86 0.08 10); }
-.dark[data-accent='amber'] { --primary: oklch(0.78 0.14 70); --primary-soft: oklch(0.32 0.06 70); --primary-soft-foreground: oklch(0.88 0.09 75); }
-.dark[data-accent='sky'] { --primary: oklch(0.72 0.13 240); --primary-soft: oklch(0.3 0.06 240); --primary-soft-foreground: oklch(0.86 0.07 240); }
+/* The pastel themes (ids match ACCENTS in lib/preferences.tsx). */
+:root[data-accent='lavender'] { --hue: 302; }
+:root[data-accent='blush'] { --hue: 355; --primary-l: 0.6; --primary-c: 0.14; }
+:root[data-accent='peach'] { --hue: 45; --primary-l: 0.62; --primary-c: 0.13; }
+:root[data-accent='butter'] { --hue: 88; --primary-l: 0.6; --primary-c: 0.115; --tint: 1.3; }
+:root[data-accent='mint'] { --hue: 168; --primary-l: 0.58; --primary-c: 0.1; }
+:root[data-accent='sky'] { --hue: 232; --primary-l: 0.58; --primary-c: 0.12; }
 
 @theme inline {
   --font-sans: 'Inter Variable', 'Heebo Variable', ui-sans-serif, system-ui, sans-serif;

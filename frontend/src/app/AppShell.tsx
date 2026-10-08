@@ -143,19 +143,25 @@ function UserMenu() {
         <MenuLabel className="flex items-center gap-2">
           <Palette className="size-3.5" /> {t('prefs.accent')}
         </MenuLabel>
-        <div className="flex gap-2 px-2.5 pb-2.5 pt-1">
+        <div className="grid grid-cols-7 gap-1.5 px-2.5 pb-1 pt-1">
           {ACCENTS.map((a) => (
-            <button
-              key={a}
-              onClick={() => setAccent(a)}
-              aria-label={a}
-              className="grid size-6 place-items-center rounded-full ring-offset-2 ring-offset-popover transition-transform hover:scale-110"
-              style={{ background: ACCENT_SWATCH[a], boxShadow: accent === a ? `0 0 0 2px var(--popover), 0 0 0 4px ${ACCENT_SWATCH[a]}` : undefined }}
-            >
-              {accent === a && <Check className="size-3.5 text-white" strokeWidth={3} />}
-            </button>
+            <Tooltip key={a} content={t(`prefs.accents.${a}`)}>
+              <button
+                onClick={() => setAccent(a)}
+                aria-label={t(`prefs.accents.${a}`)}
+                aria-pressed={accent === a}
+                className="grid size-7 place-items-center rounded-full transition-transform hover:scale-110"
+                style={{
+                  background: `linear-gradient(135deg, ${ACCENT_SWATCH[a].soft} 45%, ${ACCENT_SWATCH[a].strong})`,
+                  boxShadow: accent === a ? `0 0 0 2px var(--popover), 0 0 0 4px ${ACCENT_SWATCH[a].strong}` : 'inset 0 0 0 1px oklch(0 0 0 / 0.06)',
+                }}
+              >
+                {accent === a && <Check className="size-3.5" style={{ color: ACCENT_SWATCH[a].strong }} strokeWidth={3} />}
+              </button>
+            </Tooltip>
           ))}
         </div>
+        <div className="px-2.5 pb-2.5 text-xs text-muted-foreground">{t(`prefs.accents.${accent}`)}</div>
         <MenuSeparator />
         <MenuLabel className="flex items-center gap-2">
           <Languages className="size-3.5" /> {t('prefs.language')}
@@ -173,6 +179,8 @@ function UserMenu() {
     </Menu>
   )
 }
+
+const WIDE_PAGES = ['/locations']
 
 export function AppShell() {
   const { t } = useTranslation()
@@ -266,7 +274,8 @@ export function AppShell() {
           </div>
         </header>
         <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-[1400px] px-4 py-6 lg:px-8 lg:py-8">
+          {/* The floor plan gets the whole width; reading pages stay comfortably narrow. */}
+          <div className={cn('mx-auto w-full px-4 py-6 lg:px-8 lg:py-8', !WIDE_PAGES.includes(location.pathname) && 'max-w-[1400px]')}>
             <Outlet />
           </div>
         </main>

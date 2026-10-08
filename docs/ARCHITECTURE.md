@@ -125,4 +125,4 @@ src/
 * **Server state** is React Query only. After any write, active queries refresh — an item move changes stock, counts and the audit log, so the app never shows a stale number.
 * **Apply or propose** is one component: `ActionDialog` asks the session whether the user holds the permission (apply directly), may propose the action (adds a *why* field and submits a change request), or neither.
 * **RTL**: layouts use logical properties (`ms-`, `pe-`, `start-`), Radix gets the direction from a provider, server-generated text is bidi-isolated, and change descriptions are worded client-side in the UI language.
-* **Theming** is CSS variables (`styles/index.css`): light/dark and the accent colour are pure CSS, applied before first paint.
+* **Theming** is CSS variables (`styles/index.css`): light/dark and the colour theme are pure CSS, applied before first paint. Each pastel theme is one hue (`--hue`, plus optional `--tint` / `--primary-l` / `--primary-c`); every surface and accent token is derived from it.

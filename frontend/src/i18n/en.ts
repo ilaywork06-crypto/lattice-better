@@ -18,7 +18,8 @@ const en = {
     groups: { overview: 'Overview', assets: 'Assets', stock: 'Stock & places', activity: 'Activity', admin: 'Administration' },
   },
   prefs: {
-    account: 'Account', theme: 'Theme', light: 'Light', dark: 'Dark', system: 'System', accent: 'Accent colour',
+    account: 'Account', theme: 'Theme', light: 'Light', dark: 'Dark', system: 'System', accent: 'Colour theme',
+    accents: { periwinkle: 'Periwinkle', lavender: 'Lavender', blush: 'Blush', peach: 'Peach', butter: 'Butter', mint: 'Mint', sky: 'Sky' },
     language: 'Language',
   },
   auth: { signOut: 'Sign out' },
@@ -238,7 +239,7 @@ const en = {
     deleted: 'Location deleted', deleteTitle: 'Delete “{{name}}”?', search: 'Search locations…', building: 'Building',
     room: 'Room', pickHint: 'Tip: click the map to place it.', partOfDesiccator: 'Part of the desiccator',
     desiccator: 'Desiccator', other: 'Other locations', editMap: 'Edit map', doneEditing: 'Done',
-    drawHint: 'Drag on empty space to draw a building', legendLocation: 'Location', newBuilding: 'Building',
+    drawHint: 'Drag on empty space to draw a building', legendLocation: 'Location', mapLarger: 'Larger map', mapSmaller: 'Map beside the list', newBuilding: 'Building',
     buildingTitle: 'Building', buildingName: 'Name', color: 'Colour', deleteBuilding: 'Delete building',
     itemsHere_one: '{{count}} item here', itemsHere_other: '{{count}} items here', nothingHere: 'Nothing here',
     itemsCount_one: '{{count}} item', itemsCount_other: '{{count}} items',

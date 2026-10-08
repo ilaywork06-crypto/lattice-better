@@ -23,7 +23,8 @@ const he: Translation<Messages> = {
     groups: { overview: 'סקירה', assets: 'נכסים', stock: 'מלאי ומקומות', activity: 'פעילות', admin: 'ניהול' },
   },
   prefs: {
-    account: 'חשבון', theme: 'ערכת נושא', light: 'בהירה', dark: 'כהה', system: 'מערכת', accent: 'צבע הדגשה',
+    account: 'חשבון', theme: 'ערכת נושא', light: 'בהירה', dark: 'כהה', system: 'מערכת', accent: 'ערכת צבעים',
+    accents: { periwinkle: 'פריווינקל', lavender: 'לבנדר', blush: 'ורוד', peach: 'אפרסק', butter: 'חמאה', mint: 'מנטה', sky: 'שמיים' },
     language: 'שפה',
   },
   auth: { signOut: 'התנתקות' },
@@ -244,7 +245,7 @@ const he: Translation<Messages> = {
     deleted: 'המיקום נמחק', deleteTitle: 'למחוק את “{{name}}”?', search: 'חיפוש מיקומים…', building: 'מבנה',
     room: 'חדר', pickHint: 'טיפ: לחצו על המפה כדי למקם.', partOfDesiccator: 'חלק מהדסיקטור',
     desiccator: 'דסיקטור', other: 'מיקומים אחרים', editMap: 'עריכת המפה', doneEditing: 'סיום',
-    drawHint: 'גררו על שטח ריק כדי לצייר מבנה', legendLocation: 'מיקום', newBuilding: 'מבנה',
+    drawHint: 'גררו על שטח ריק כדי לצייר מבנה', legendLocation: 'מיקום', mapLarger: 'מפה גדולה', mapSmaller: 'מפה לצד הרשימה', newBuilding: 'מבנה',
     buildingTitle: 'מבנה', buildingName: 'שם', color: 'צבע', deleteBuilding: 'מחיקת המבנה',
     itemsHere_one: 'פריט אחד כאן', itemsHere_two: '{{count}} פריטים כאן', itemsHere_other: '{{count}} פריטים כאן', nothingHere: 'אין כאן דבר',
     itemsCount_one: 'פריט אחד', itemsCount_two: '{{count}} פריטים', itemsCount_other: '{{count}} פריטים',

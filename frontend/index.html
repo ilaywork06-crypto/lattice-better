@@ -12,7 +12,9 @@
         const t = localStorage.getItem('lattice.theme') || 'system'
         const dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
         document.documentElement.classList.toggle('dark', dark)
-        document.documentElement.dataset.accent = localStorage.getItem('lattice.accent') || 'indigo'
+        const a = localStorage.getItem('lattice.accent') || 'periwinkle'
+        const legacy = { indigo: 'periwinkle', violet: 'lavender', rose: 'blush', amber: 'peach', teal: 'mint' }
+        document.documentElement.dataset.accent = legacy[a] || a
         const lng = localStorage.getItem('lattice.lang')
         if (lng === 'he') { document.documentElement.lang = 'he'; document.documentElement.dir = 'rtl' }
       } catch {}
