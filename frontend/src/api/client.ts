@@ -1,3 +1,5 @@
+import { toast } from 'sonner'
+import i18n from '@/i18n'
 import { store } from '@/lib/storage'
 
 /** One problem pinned to a field, payload key or spreadsheet cell. */
@@ -109,25 +111,44 @@ export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T
 }
 
 /** Fetch a file (with the session) and hand it to the browser as a download. */
-export async function download(path: string, query?: Query, fallbackName = 'download') {
-  const res = await send(path, { query })
-  const disposition = res.headers.get('Content-Disposition') ?? ''
-  const match = /filename="?([^";]+)"?/.exec(disposition)
-  const blob = await res.blob()
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = match?.[1] ?? fallbackName
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
+/** File transfers are fire-and-forget from a click, so they report their own failures. */
+function reportFailure(e: unknown) {
+  toast.error(e instanceof ApiError ? e.message : i18n.t('errors.generic'))
 }
 
-/** Open a stored file in a new tab (images, PDFs) with the session attached. */
+export async function download(path: string, query?: Query, fallbackName = 'download') {
+  try {
+    const res = await send(path, { query })
+    const disposition = res.headers.get('Content-Disposition') ?? ''
+    const match = /filename="?([^";]+)"?/.exec(disposition)
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = match?.[1] ?? fallbackName
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  } catch (e) {
+    reportFailure(e)
+  }
+}
+
+/** Opens a stored file in a new tab (fetched with the session's token). */
 export async function openFile(path: string) {
-  const res = await send(path, {})
-  const url = URL.createObjectURL(await res.blob())
-  window.open(url, '_blank', 'noopener')
-  setTimeout(() => URL.revokeObjectURL(url), 60_000)
+  // Open the tab now, while we're still inside the click: popup blockers
+  // refuse a window.open that comes after an await.
+  const tab = window.open('', '_blank')
+  if (tab) tab.opener = null
+  try {
+    const res = await send(path, {})
+    const url = URL.createObjectURL(await res.blob())
+    if (tab) tab.location.href = url
+    else window.open(url, '_blank', 'noopener')
+    setTimeout(() => URL.revokeObjectURL(url), 60_000)
+  } catch (e) {
+    tab?.close()
+    reportFailure(e)
+  }
 }

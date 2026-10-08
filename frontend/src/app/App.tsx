@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Direction } from 'radix-ui'
-import { lazy, Suspense, type ReactNode } from 'react'
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router'
+import { Fragment, lazy, Suspense, type ReactNode } from 'react'
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from 'react-router'
 import { Toaster } from 'sonner'
 import { ApiError } from '@/api/client'
 import type { Permission } from '@/api/types'
@@ -48,6 +48,12 @@ function PageFallback() {
   )
 }
 
+/** Remounts its page when the route's :id changes, so no state leaks between records. */
+function ByParam({ children }: { children: ReactNode }) {
+  const { id } = useParams()
+  return <Fragment key={id ?? 'new'}>{children}</Fragment>
+}
+
 function RequireAuth({ children }: { children: ReactNode }) {
   const { user, loading } = useSession()
   const location = useLocation()
@@ -87,15 +93,15 @@ export function App() {
                   <Route path="/login" element={<LoginPage />} />
                   <Route element={<RequireAuth><AppShell /></RequireAuth>}>
                     <Route index element={<DashboardPage />} />
-                    <Route path="cards" element={<ItemsPage type="card" />} />
-                    <Route path="assemblies" element={<ItemsPage type="assembly" />} />
-                    <Route path="setups" element={<ItemsPage type="setup" />} />
+                    <Route path="cards" element={<ItemsPage key="card" type="card" />} />
+                    <Route path="assemblies" element={<ItemsPage key="assembly" type="assembly" />} />
+                    <Route path="setups" element={<ItemsPage key="setup" type="setup" />} />
                     <Route path="items/:id" element={<ItemPage />} />
                     <Route path="templates" element={<TemplatesPage />} />
-                    <Route path="templates/new" element={<TemplateEditorPage mode="create" />} />
-                    <Route path="templates/:id" element={<TemplatePage />} />
-                    <Route path="templates/:id/edit" element={<TemplateEditorPage mode="edit" />} />
-                    <Route path="templates/:id/duplicate" element={<TemplateEditorPage mode="duplicate" />} />
+                    <Route path="templates/new" element={<ByParam key="create"><TemplateEditorPage mode="create" /></ByParam>} />
+                    <Route path="templates/:id" element={<ByParam><TemplatePage /></ByParam>} />
+                    <Route path="templates/:id/edit" element={<ByParam key="edit"><TemplateEditorPage mode="edit" /></ByParam>} />
+                    <Route path="templates/:id/duplicate" element={<ByParam key="duplicate"><TemplateEditorPage mode="duplicate" /></ByParam>} />
                     <Route path="inventory" element={<InventoryPage />} />
                     <Route path="hierarchy" element={<HierarchyPage />} />
                     <Route path="locations" element={<LocationsPage />} />

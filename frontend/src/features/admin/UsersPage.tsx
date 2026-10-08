@@ -25,7 +25,9 @@ function UserDialog({ user, open, onOpenChange }: { user: User | null; open: boo
   const [form, setForm] = useState({ email: '', full_name: '', password: '', role: 'viewer' as UserRole, is_active: true, hint: false, hintPassword: '' })
   useEffect(() => {
     if (open) setForm({ email: user?.email ?? '', full_name: user?.full_name ?? '', password: '', role: user?.role ?? 'viewer', is_active: user?.is_active ?? true, hint: user?.login_hint_visible ?? false, hintPassword: '' })
-  }, [open, user])
+    // Not on every refetch of the same user, which would wipe what's being typed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, user?.id])
   const self = user?.id === me?.id
   const save = useAction(() => user
     ? E.users.update(user.id, {
@@ -51,8 +53,8 @@ function UserDialog({ user, open, onOpenChange }: { user: User | null; open: boo
           <Field label={user ? t('users.newPassword') : t('login.password')} required={!user} hint={user ? t('users.passwordHint') : t('users.passwordMin')}>
             <Input type="password" dir="ltr" autoComplete="new-password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
           </Field>
-          <Field label={t('users.role')} hint={t(`users.roleHints.${form.role}`)}>
-            <Segmented value={form.role} onChange={(r) => !self && setForm({ ...form, role: r })} options={ROLES.map((r) => ({ value: r, label: t(`enums.role.${r}`) }))} />
+          <Field label={t('users.role')} hint={self ? t('users.ownRole') : t(`users.roleHints.${form.role}`)}>
+            <Segmented value={form.role} disabled={self} onChange={(r) => setForm({ ...form, role: r })} options={ROLES.map((r) => ({ value: r, label: t(`enums.role.${r}`) }))} />
           </Field>
           {user && !self && (
             <label className="flex items-center gap-2.5 text-sm"><Switch checked={form.is_active} onChange={(v) => setForm({ ...form, is_active: v })} /> {t('users.active')}
@@ -145,7 +147,7 @@ export default function UsersPage() {
           </Table>
         )}
       </Card>
-      <UserDialog user={editing} open={open} onOpenChange={setOpen} />
+      <UserDialog user={users.data?.find((u) => u.id === editing?.id) ?? editing} open={open} onOpenChange={setOpen} />
     </div>
   )
 }

@@ -1,8 +1,8 @@
-import { LayoutGrid, LayoutTemplate, List, Plus, Search, X } from 'lucide-react'
+import { LayoutGrid, LayoutTemplate, List, MapPin, Plus, Search, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router'
-import { useItems, useTemplates } from '@/api/queries'
+import { useItems, useLocations, useTemplates } from '@/api/queries'
 import type { CardType, ItemState, ItemType, StorageStatus, TemplateSummary } from '@/api/types'
 import { useWorkflowMode } from '@/components/domain/ActionDialog'
 import { CardTypeBadge, TypeIcon } from '@/components/domain/badges'
@@ -63,7 +63,14 @@ export default function ItemsPage({ type }: { type: ItemType }) {
   const [search, setSearch] = useState('')
   const q = useDebounced(search)
   const [cardType, setCardType] = useState<CardType | null>(null)
-  const [state, setState] = useState<ItemState | null>(null)
+  // In the URL so other pages can link to a filtered list (dashboard "faulty", a location's items).
+  const [stateParam, setStateParam] = useUrlState('state')
+  const state = (stateParam || null) as ItemState | null
+  const setState = (v: ItemState | null) => setStateParam(v ?? '')
+  const [locationParam, setLocationParam] = useUrlState('location')
+  const locationId = locationParam ? Number(locationParam) : undefined
+  const locations = useLocations()
+  const activeLocation = locationId ? locations.data?.find((l) => l.id === locationId) : undefined
   const [storage, setStorage] = useState<StorageStatus | null>(null)
   const [showDestroyed, setShowDestroyed] = useState(false)
   const [offset, setOffset] = useState(0)
@@ -76,7 +83,7 @@ export default function ItemsPage({ type }: { type: ItemType }) {
   useEffect(() => {
     setOffset(0)
     setSelected([])
-  }, [type, q, cardType, state, storage, showDestroyed, templateId, view])
+  }, [type, q, cardType, state, storage, showDestroyed, templateId, locationId, view])
 
   useEffect(() => {
     if (params.get('new') === '1') {
@@ -86,10 +93,10 @@ export default function ItemsPage({ type }: { type: ItemType }) {
   }, [params, setParams])
 
   const templates = useTemplates({ type, card_type: cardType ?? undefined })
-  const showUnits = view === 'units' || !!templateId
+  const showUnits = view === 'units' || !!templateId || !!locationId
   const items = useItems(
     {
-      type, template_id: templateId, card_type: cardType ?? undefined, state: state ?? undefined,
+      type, template_id: templateId, location_id: locationId, card_type: cardType ?? undefined, state: state ?? undefined,
       storage: storage ?? undefined, include_destroyed: showDestroyed || state === 'destroyed', q: q || undefined,
       limit: PAGE, offset,
     },
@@ -143,7 +150,7 @@ export default function ItemsPage({ type }: { type: ItemType }) {
           value={showUnits ? 'units' : 'templates'}
           onChange={(v) => {
             setView(v)
-            if (v === 'templates') setTemplateParam('')
+            if (v === 'templates') { setTemplateParam(''); setLocationParam('') }
           }}
           options={[
             { value: 'templates', label: t('items.byTemplate'), icon: <LayoutGrid /> },
@@ -163,6 +170,14 @@ export default function ItemsPage({ type }: { type: ItemType }) {
             <Link to={`/templates/${activeTemplate.id}`}><LayoutTemplate /> {t('items.openTemplate')}</Link>
           </Button>
           <Button size="icon-sm" variant="ghost" onClick={() => setTemplateParam('')} aria-label={t('common.clear')}><X /></Button>
+        </div>
+      )}
+
+      {locationId && (
+        <div className="mb-4 flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-soft">
+          <MapPin className="size-4 text-muted-foreground" />
+          <div className="min-w-0 flex-1 font-semibold" dir="auto">{activeLocation?.name ?? '…'}</div>
+          <Button size="icon-sm" variant="ghost" onClick={() => setLocationParam('')} aria-label={t('common.clear')}><X /></Button>
         </div>
       )}
 

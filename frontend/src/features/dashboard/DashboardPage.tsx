@@ -210,7 +210,7 @@ export default function DashboardPage() {
             <Stat label={t('enums.typePlural.assembly')} value={formatNumber(s.assemblies)} icon={<Cpu />} tone="primary" onClick={() => navigate('/assemblies')} />
             <Stat label={t('enums.typePlural.setup')} value={formatNumber(s.setups)} icon={<Server />} tone="primary" onClick={() => navigate('/setups')} />
             <Stat label={t('dashboard.faulty')} value={formatNumber(s.faulty_items)} icon={<AlertTriangle />} tone={s.faulty_items ? 'danger' : 'neutral'}
-              onClick={() => navigate('/cards?view=units')} />
+              onClick={() => navigate('/cards?view=units&state=faulty')} />
             <Stat label={t('dashboard.pending')} value={formatNumber(s.pending_change_requests)} icon={<GitPullRequestArrow />}
               tone={s.pending_change_requests ? 'warning' : 'neutral'}
               onClick={() => navigate('/change-requests')} />

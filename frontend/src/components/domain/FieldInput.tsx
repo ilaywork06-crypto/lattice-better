@@ -176,6 +176,8 @@ export function FilesInput({ value, onChange, initial, disabled }: {
 }) {
   const { t } = useTranslation()
   const input = useRef<HTMLInputElement>(null)
+  const latest = useRef(value)
+  latest.current = value
   const [docs, setDocs] = useState<Map<number, { name: string; size?: number | null }>>(
     () => new Map((initial ?? []).map((d) => [d.id, { name: d.name, size: d.size_bytes }])),
   )
@@ -186,14 +188,18 @@ export function FilesInput({ value, onChange, initial, disabled }: {
     if (!files?.length) return
     setBusy(true)
     setError(null)
+    const uploaded: DocumentOut[] = []
     try {
-      const uploaded: DocumentOut[] = []
       for (const f of Array.from(files)) uploaded.push(await E.uploads.stage(f))
-      setDocs((m) => new Map([...m, ...uploaded.map((d) => [d.id, { name: d.name, size: d.size_bytes }] as const)]))
-      onChange([...value, ...uploaded.map((d) => d.id)])
     } catch (e) {
       setError((e as Error).message)
     } finally {
+      // Keep whatever did upload, added to the value as it is *now* (a chip may
+      // have been removed while the upload ran).
+      if (uploaded.length) {
+        setDocs((m) => new Map([...m, ...uploaded.map((d) => [d.id, { name: d.name, size: d.size_bytes }] as const)]))
+        onChange([...latest.current, ...uploaded.map((d) => d.id)])
+      }
       setBusy(false)
       if (input.current) input.current.value = ''
     }

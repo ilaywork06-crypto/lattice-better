@@ -95,6 +95,19 @@ function OptionList<V extends string | number>({
   )
 }
 
+/**
+ * Open state that also clears a server-side search on close: the search box
+ * starts empty when reopened, so the results must too.
+ */
+function useOpen(onSearch?: (text: string) => void) {
+  const [open, setOpen] = useState(false)
+  const set = (o: boolean) => {
+    setOpen(o)
+    if (!o) onSearch?.('')
+  }
+  return [open, set] as const
+}
+
 const trigger =
   'flex min-h-9 w-full items-center gap-2 rounded-lg border border-input bg-card px-3 py-1 text-start text-sm outline-none transition-colors ' +
   'focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-ring disabled:opacity-60 aria-invalid:border-danger'
@@ -112,7 +125,7 @@ export function Combobox<V extends string | number>({
   clearable?: boolean
   invalid?: boolean
 }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useOpen(props.onSearch)
   const selected = props.options.find((o) => o.value === value)
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -160,7 +173,7 @@ export function MultiCombobox<V extends string | number>({
   invalid,
   ...props
 }: BaseProps<V> & { value: V[]; onChange: (v: V[]) => void; invalid?: boolean }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useOpen(props.onSearch)
   const chosen = value.map((v) => props.options.find((o) => o.value === v) ?? { value: v, label: `#${v}` })
   const toggle = (v: V) => onChange(value.includes(v) ? value.filter((x) => x !== v) : [...value, v])
   return (

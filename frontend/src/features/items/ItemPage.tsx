@@ -4,7 +4,8 @@ import {
 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
+import { toast } from 'sonner'
 import { useAudit, useBuildings, useItem, useItemTree, useLocations } from '@/api/queries'
 import type { ItemDetail } from '@/api/types'
 import { useWorkflowMode } from '@/components/domain/ActionDialog'
@@ -19,6 +20,7 @@ import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/compo
 import { Avatar, EmptyState, Progress, Skeleton } from '@/components/ui/misc'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip } from '@/components/ui/tooltip'
+import { copyText } from '@/lib/clipboard'
 import { cn } from '@/lib/cn'
 import { STATE_COLOR } from '@/lib/domain'
 import { formatDateTime, timeAgo } from '@/lib/format'
@@ -42,8 +44,8 @@ function CopySerial({ serial }: { serial: string }) {
   return (
     <Tooltip content={done ? t('common.copied') : t('common.copy')}>
       <button
-        onClick={() => {
-          void navigator.clipboard.writeText(serial)
+        onClick={async () => {
+          if (!(await copyText(serial))) return void toast.error(t('errors.generic'))
           setDone(true)
           setTimeout(() => setDone(false), 1200)
         }}
@@ -67,6 +69,7 @@ function Meta({ icon, children }: { icon: ReactNode; children: ReactNode }) {
 
 function Overview({ item }: { item: ItemDetail }) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const locations = useLocations()
   const buildings = useBuildings()
   const own = item.fields.filter((f) => f.mode !== 'fixed')
@@ -121,7 +124,8 @@ function Overview({ item }: { item: ItemDetail }) {
               <p className="text-sm text-muted-foreground">{t('item.noLocation')}</p>
             )}
             {item.location && locations.data && (
-              <FloorPlan compact locations={locations.data} buildings={buildings.data ?? []} selectedId={item.location.id} />
+              <FloorPlan compact locations={locations.data} buildings={buildings.data ?? []} selectedId={item.location.id}
+                onSelect={(id) => navigate(`/locations?selected=${id}`)} />
             )}
             {item.parent && (
               <p className="text-[13px] text-muted-foreground">{t('item.followsContainer')}</p>
@@ -273,7 +277,9 @@ export default function ItemPage() {
       </div>
     )
   }
-  if (item.isError || !item.data) {
+  // Only when there's nothing to show: a failed background refetch (e.g. the item was
+  // just deleted from this page) keeps the last data until we navigate away.
+  if (!item.data) {
     return <EmptyState icon={<CircleAlert />} title={t('item.notFound')} description={t('item.notFoundHint')}
       action={<Button asChild><Link to="/cards">{t('nav.cards')}</Link></Button>} />
   }

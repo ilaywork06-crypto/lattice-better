@@ -5,7 +5,6 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-  type QueryKey,
 } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -125,11 +124,11 @@ export const useNotificationCounts = () =>
 
 // ─────────────────────────── writes ───────────────────────────
 /** Everything the server holds is related (an item move changes stock, counts,
- *  the audit log…), so after a write every active query is refreshed — except
- *  the session itself. Inactive ones refresh when next shown. */
+ *  the audit log, even the signed-in user's own name…), so after a write every
+ *  active query is refreshed. Inactive ones refresh when next shown. */
 export function useRefreshAll() {
   const qc = useQueryClient()
-  return () => qc.invalidateQueries({ predicate: (q) => (q.queryKey as QueryKey)[0] !== 'me' })
+  return () => qc.invalidateQueries()
 }
 
 /**
@@ -157,6 +156,8 @@ export function useAction<TArgs, TResult>(
       options.onSuccess?.(result, args)
     },
     onError: (error) => {
+      // A multi-step action (several uploads…) may have partly happened.
+      void refresh()
       if (error instanceof ApiError && options.quietIssues && error.issues.length) return
       toast.error(error instanceof ApiError ? error.message : t('errors.generic'))
     },

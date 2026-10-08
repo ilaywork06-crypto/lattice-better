@@ -65,8 +65,9 @@ export function ItemFormDialog({
   }, [open, item, fixedTemplateId])
 
   // Initial values: the item's own values (editing) or each list's first entry (creating).
+  // On every opening too, so a cancelled edit doesn't come back.
   useEffect(() => {
-    if (!template.data) return
+    if (!open || !template.data) return
     const v: Values = {}
     for (const f of template.data.fields) {
       if (f.mode === 'fixed') continue
@@ -77,7 +78,9 @@ export function ItemFormDialog({
       } else v[f.key] = f.field_type === 'managers' || f.field_type === 'files' ? [] : null
     }
     setValues(v)
-  }, [template.data, item])
+    // By id, so a background refetch doesn't wipe what's being typed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, template.data?.id, item?.id])
 
   const tpl = template.data
   const editable = useMemo(

@@ -1,9 +1,10 @@
 import { Building2, Crosshair, Droplets, MapPin, PencilRuler, Plus, Save, Search, Trash2 } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import * as E from '@/api/endpoints'
-import { useAction, useBuildings, useItems, useLocations } from '@/api/queries'
+import { keys, useAction, useBuildings, useItems, useLocations } from '@/api/queries'
 import type { Building, Location } from '@/api/types'
 import { FloorPlan } from '@/components/domain/FloorPlan'
 import { ItemLink, StateBadge } from '@/components/domain/badges'
@@ -124,6 +125,7 @@ export default function LocationsPage() {
   const { can } = useSession()
   const locations = useLocations()
   const buildings = useBuildings()
+  const qc = useQueryClient()
   const [selectedParam, setSelectedParam] = useUrlState('selected')
   const [creating, setCreating] = useState(false)
   const [editingMap, setEditingMap] = useState(false)
@@ -153,7 +155,7 @@ export default function LocationsPage() {
               <PencilRuler /> {editingMap ? t('locations.doneEditing') : t('locations.editMap')}
             </Button>
           )}
-          {can('write_locations') && <Button variant="primary" onClick={() => { setCreating(true); setSelectedParam('') }}><Plus /> {t('locations.new')}</Button>}
+          {can('write_locations') && <Button variant="primary" onClick={() => { setCreating(true); setPick(null); setSelectedParam('') }}><Plus /> {t('locations.new')}</Button>}
         </>}
       />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
@@ -170,7 +172,11 @@ export default function LocationsPage() {
               selectedBuildingId={buildingId}
               onSelectBuilding={setBuildingId}
               onBuildingDraw={(r) => createBuilding.mutate({ name: t('locations.newBuilding'), ...r, color: COLORS[(buildings.data?.length ?? 0) % COLORS.length], sort_order: 0 })}
-              onBuildingChange={(id, r) => changeBuilding.mutate({ id, r })}
+              onBuildingChange={(id, r) => {
+                // Show the new shape right away; the refresh after the save (or its failure) settles it.
+                qc.setQueryData<Building[]>(keys.buildings, (old) => old?.map((b) => (b.id === id ? { ...b, ...r } : b)))
+                changeBuilding.mutate({ id, r })
+              }}
             />
           )}
           <div className="mt-3 flex flex-wrap items-center gap-4 px-1 text-xs text-muted-foreground">
@@ -190,7 +196,7 @@ export default function LocationsPage() {
             <>
               <Card>
                 <CardHeader icon={<MapPin />} title={selected ? selected.name : t('locations.new')}
-                  actions={<Button size="sm" variant="ghost" onClick={() => { setCreating(false); setSelectedParam('') }}>{t('common.close')}</Button>} />
+                  actions={<Button size="sm" variant="ghost" onClick={() => { setCreating(false); setPick(null); setSelectedParam('') }}>{t('common.close')}</Button>} />
                 <CardBody>
                   <LocationEditor location={creating ? null : selected} pick={pick}
                     onDone={(id) => { setCreating(false); setPick(null); setSelectedParam(id ? String(id) : '') }} />
@@ -199,7 +205,7 @@ export default function LocationsPage() {
               {selected && (
                 <Card>
                   <CardHeader title={t('locations.itemsHere', { count: selected.item_count })}
-                    actions={<Button size="sm" variant="ghost" asChild><Link to={`/cards?view=units`}>{t('common.viewAll')}</Link></Button>} />
+                    actions={<Button size="sm" variant="ghost" asChild><Link to={`/cards?view=units&location=${selected.id}`}>{t('common.viewAll')}</Link></Button>} />
                   <CardBody><ItemsHere location={selected} /></CardBody>
                 </Card>
               )}
@@ -215,7 +221,7 @@ export default function LocationsPage() {
               {list.length === 0 ? <EmptyState compact icon={<MapPin />} title={t('locations.empty')} description={t('locations.emptyHint')} /> : (
                 <div className="max-h-[560px] divide-y divide-border overflow-y-auto">
                   {list.map((l) => (
-                    <button key={l.id} onClick={() => setSelectedParam(String(l.id))} className="flex w-full items-center gap-3 px-4 py-2.5 text-start hover:bg-muted/60">
+                    <button key={l.id} onClick={() => { setPick(null); setSelectedParam(String(l.id)) }} className="flex w-full items-center gap-3 px-4 py-2.5 text-start hover:bg-muted/60">
                       <span className={cn('grid size-8 place-items-center rounded-lg', l.is_desiccator ? 'bg-info-soft text-info' : 'bg-muted text-muted-foreground')}>
                         {l.is_desiccator ? <Droplets className="size-4" /> : <MapPin className="size-4" />}
                       </span>

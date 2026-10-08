@@ -78,5 +78,6 @@ class SearchService(Service):
             for u in sorted(users, key=lambda u: (-score(ql, u.full_name, u.email),
                                                   u.full_name.lower()))[:_LIMITS["users"]]:
                 out.users.append(SearchHit(kind="user", id=u.id, title=u.full_name,
-                                           subtitle=u.email, badge=u.role.value, link="/users"))
+                                           subtitle=u.email, badge=u.role.value,
+                                           link="/admin/users"))
         return out

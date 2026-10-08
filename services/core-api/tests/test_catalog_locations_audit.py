@@ -70,5 +70,5 @@ def test_search_ranks_and_treats_wildcards_literally(world, admin):
     assert admin.ok("GET", "/search?q=regulator")["templates"][0]["title"] == \
         "Power Regulator Board"
     assert admin.ok("GET", "/search?q=%25")["items"] == []
-    assert admin.ok("GET", "/search?q=noa")["users"]
+    assert admin.ok("GET", "/search?q=noa")["users"][0]["link"] == "/admin/users"  # the web route
     assert world.as_("editor").ok("GET", "/search?q=noa")["users"] == []

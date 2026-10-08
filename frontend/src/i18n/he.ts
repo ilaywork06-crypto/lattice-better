@@ -324,7 +324,7 @@ const he: Translation<Messages> = {
   users: {
     description: 'מי יכול להתחבר, ומה מותר לו.', new: 'משתמש חדש', search: 'חיפוש אנשים…', user: 'משתמש',
     role: 'תפקיד', status: 'מצב', joined: 'הצטרף', you: 'את/ה', active: 'פעיל', inactive: 'מושבת',
-    activeHint: 'משתמש מושבת לא יכול להתחבר', onLogin: 'בעמוד הכניסה', fullName: 'שם מלא',
+    activeHint: 'משתמש מושבת לא יכול להתחבר', ownRole: 'אי אפשר לשנות את התפקיד של עצמך', onLogin: 'בעמוד הכניסה', fullName: 'שם מלא',
     newPassword: 'סיסמה חדשה', passwordHint: 'השאירו ריק כדי לשמור על הנוכחית.', passwordMin: 'לפחות 6 תווים.',
     roleHints: {
       viewer: 'קורא הכול; יכול להציע שינוי מיקום.',

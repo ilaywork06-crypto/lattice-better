@@ -22,16 +22,18 @@ export function LoadGroupsDialog({ open, onOpenChange, onLoad }: {
   const [search, setSearch] = useState('')
   const q = useDebounced(search)
   const groups = useFieldGroups(q || undefined)
-  const [chosen, setChosen] = useState<number[]>([])
+  // Whole groups, not ids: a chosen group may be hidden by a later search.
+  const [chosen, setChosen] = useState<FieldGroup[]>([])
+  const isChosen = (g: FieldGroup) => chosen.some((c) => c.id === g.id)
+  const close = () => { setChosen([]); setSearch(''); onOpenChange(false) }
   return (
-    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) setChosen([]) }}>
+    <Dialog open={open} onOpenChange={(o) => (o ? onOpenChange(true) : close())}>
       <DialogContent size="lg" icon={<Layers />} title={t('groups.loadTitle')} description={t('groups.loadHint')}
         footer={<>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>{t('common.cancel')}</Button>
+          <Button variant="ghost" onClick={close}>{t('common.cancel')}</Button>
           <Button variant="primary" disabled={!chosen.length} onClick={() => {
-            onLoad((groups.data ?? []).filter((g) => chosen.includes(g.id)))
-            setChosen([])
-            onOpenChange(false)
+            onLoad(chosen)
+            close()
           }}>{t('groups.load', { count: chosen.length })}</Button>
         </>}>
         <div className="relative mb-3">
@@ -44,7 +46,7 @@ export function LoadGroupsDialog({ open, onOpenChange, onLoad }: {
           <div className="flex flex-col gap-2">
             {groups.data.map((g) => (
               <label key={g.id} className="flex cursor-pointer gap-3 rounded-xl border border-border p-3 hover:bg-muted/50 has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary-soft/30">
-                <Checkbox checked={chosen.includes(g.id)} onChange={(v) => setChosen(v ? [...chosen, g.id] : chosen.filter((x) => x !== g.id))} className="mt-0.5" />
+                <Checkbox checked={isChosen(g)} onChange={(v) => setChosen(v ? [...chosen, g] : chosen.filter((x) => x.id !== g.id))} className="mt-0.5" />
                 <div className="min-w-0 flex-1">
                   <div className="font-medium">{g.name}</div>
                   {g.description && <div className="text-xs text-muted-foreground">{g.description}</div>}

@@ -318,7 +318,7 @@ const en = {
   users: {
     description: 'Who can sign in, and what they may do.', new: 'New user', search: 'Search people…', user: 'User',
     role: 'Role', status: 'Status', joined: 'Joined', you: 'You', active: 'Active', inactive: 'Inactive',
-    activeHint: 'inactive users can’t sign in', onLogin: 'On sign-in screen', fullName: 'Full name',
+    activeHint: 'inactive users can’t sign in', ownRole: 'You can’t change your own role', onLogin: 'On sign-in screen', fullName: 'Full name',
     newPassword: 'New password', passwordHint: 'Leave empty to keep the current one.', passwordMin: 'At least 6 characters.',
     roleHints: {
       viewer: 'Reads everything; may propose location changes.',

@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import * as E from '@/api/endpoints'
-import { useAction, useLocations, useStock } from '@/api/queries'
+import { useAction, useLocations, useStock, useThresholds } from '@/api/queries'
 import type { CardType, StockRow } from '@/api/types'
 import { CardTypeBadge } from '@/components/domain/badges'
 import { Badge } from '@/components/ui/badge'
@@ -22,36 +22,38 @@ import { CARD_TYPES } from '@/lib/domain'
 import { useSession } from '@/lib/session'
 
 function ThresholdDialog({ row, onClose }: { row: StockRow | null; onClose: () => void }) {
+  return (
+    <Dialog open={!!row} onOpenChange={(o) => !o && onClose()}>
+      {/* Keyed and mounted per opening, so it always starts from the saved threshold. */}
+      {row && <ThresholdForm key={row.template_id} row={row} onClose={onClose} />}
+    </Dialog>
+  )
+}
+
+function ThresholdForm({ row, onClose }: { row: StockRow; onClose: () => void }) {
   const { t } = useTranslation()
-  const [min, setMin] = useState(0)
-  const [email, setEmail] = useState('')
-  const [lastId, setLastId] = useState<number | null>(null)
-  if (row && row.template_id !== lastId) {
-    setLastId(row.template_id)
-    setMin(row.min_quantity ?? 0)
-    setEmail('')
-  }
-  const save = useAction(() => E.inventory.setThreshold(row!.template_id, min, email || null), {
+  const thresholds = useThresholds()
+  const saved = thresholds.data?.find((x) => x.template_id === row.template_id)
+  const [min, setMin] = useState(row.min_quantity ?? 0)
+  const [email, setEmail] = useState<string | null>(null) // null = untouched → show the saved one
+  const shownEmail = email ?? saved?.notify_email ?? ''
+  const save = useAction(() => E.inventory.setThreshold(row.template_id, min, shownEmail || null), {
     success: t('inventory.thresholdSaved'), onSuccess: onClose,
   })
   return (
-    <Dialog open={!!row} onOpenChange={(o) => !o && onClose()}>
-      {row && (
-        <DialogContent size="sm" icon={<BellRing />} title={t('inventory.thresholdTitle')} description={row.name}
-          footer={<><Button variant="ghost" onClick={onClose}>{t('common.cancel')}</Button>
-            <Button variant="primary" loading={save.isPending} onClick={() => save.mutate(undefined)}>{t('common.save')}</Button></>}>
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">{t('inventory.thresholdHint', { available: row.available })}</p>
-            <Field label={t('inventory.minimum')} required>
-              <Input type="number" min={0} value={min} onChange={(e) => setMin(Math.max(0, Number(e.target.value)))} />
-            </Field>
-            <Field label={t('inventory.notifyEmail')} hint={t('inventory.notifyEmailHint')}>
-              <Input type="email" dir="ltr" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="stock@company.com" />
-            </Field>
-          </div>
-        </DialogContent>
-      )}
-    </Dialog>
+    <DialogContent size="sm" icon={<BellRing />} title={t('inventory.thresholdTitle')} description={row.name}
+      footer={<><Button variant="ghost" onClick={onClose}>{t('common.cancel')}</Button>
+        <Button variant="primary" loading={save.isPending} disabled={thresholds.isPending} onClick={() => save.mutate(undefined)}>{t('common.save')}</Button></>}>
+      <div className="flex flex-col gap-4">
+        <p className="text-sm text-muted-foreground">{t('inventory.thresholdHint', { available: row.available })}</p>
+        <Field label={t('inventory.minimum')} required>
+          <Input type="number" min={0} value={min} onChange={(e) => setMin(Math.max(0, Number(e.target.value)))} />
+        </Field>
+        <Field label={t('inventory.notifyEmail')} hint={t('inventory.notifyEmailHint')}>
+          <Input type="email" dir="ltr" value={shownEmail} onChange={(e) => setEmail(e.target.value)} placeholder="stock@company.com" />
+        </Field>
+      </div>
+    </DialogContent>
   )
 }
 

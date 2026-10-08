@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight, PackageOpen } from 'lucide-react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import type { ItemRow, Page } from '@/api/types'
@@ -39,6 +40,13 @@ export function ItemsTable({
   const allChecked = rows.length > 0 && rows.every((r) => selected?.includes(r.id))
   const someChecked = rows.some((r) => selected?.includes(r.id))
   const showQty = rows.some((r) => r.quantity > 1)
+
+  // Rows deleted or moved out of the filter can leave us past the last page; step back.
+  useEffect(() => {
+    if (page && !page.items.length && offset > 0) {
+      onOffset(page.total ? Math.floor((page.total - 1) / page.limit) * page.limit : 0)
+    }
+  }, [page, offset, onOffset])
 
   if (loading && !page) {
     return <div className="space-y-2 p-5">{[0, 1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-10" />)}</div>
